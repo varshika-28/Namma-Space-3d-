@@ -1,0 +1,458 @@
+# Product Requirements Document (PRD)
+
+# Namma Space – Indoor 3D Digital Twin
+
+| | |
+|---|---|
+| **Event** | Namma Space – Techfest, IIT Bombay |
+| **Scope of this document** | **Round 1 only** |
+| **Team** | [TEAM NAME] |
+| **Document version** | 0.1 (Draft) |
+| **Status** | Planning. See [Current Implementation Status](#current-implementation-status) |
+
+> **Scope note:** This PRD covers Round 1 only. Round 2 and Round 3 capabilities appear only under [Future Scope](#23-future-scope) and are **not** Round 1 requirements. Technologies named in this document are **proposed** unless explicitly marked as confirmed.
+
+---
+
+## Table of Contents
+
+1. [Product Overview](#1-product-overview)
+2. [Background](#2-background)
+3. [Problem Statement](#3-problem-statement)
+4. [Product Vision](#4-product-vision)
+5. [Goals and Objectives](#5-goals-and-objectives)
+6. [Target Users](#6-target-users)
+7. [User Needs](#7-user-needs)
+8. [Round 1 Scope](#8-round-1-scope)
+9. [Functional Requirements](#9-functional-requirements)
+10. [Non-Functional Requirements](#10-non-functional-requirements)
+11. [User Experience Requirements](#11-user-experience-requirements)
+12. [3D Reconstruction Requirements](#12-3d-reconstruction-requirements)
+13. [Web Viewer Requirements](#13-web-viewer-requirements)
+14. [System Workflow](#14-system-workflow)
+15. [High-Level System Architecture](#15-high-level-system-architecture)
+16. [Data Requirements](#16-data-requirements)
+17. [Technical Requirements](#17-technical-requirements)
+18. [Performance Requirements](#18-performance-requirements)
+19. [Error Handling](#19-error-handling)
+20. [Security Considerations](#20-security-considerations)
+21. [Acceptance Criteria](#21-acceptance-criteria)
+22. [Round 1 Deliverables](#22-round-1-deliverables)
+23. [Future Scope](#23-future-scope)
+24. [Constraints](#24-constraints)
+25. [Assumptions](#25-assumptions)
+26. [Success Metrics](#26-success-metrics)
+27. [Development Milestones](#27-development-milestones)
+28. [Current Implementation Status](#current-implementation-status)
+
+---
+
+## 1. Product Overview
+
+Namma Space is an indoor digital-twin system. It converts captured visual information of a physical indoor environment into a 3D digital representation and presents it through an interactive web application.
+
+A user opens a website and explores the reconstructed environment in the browser, without installing specialized software.
+
+The product is being built for the **Namma Space Techfest competition at IIT Bombay**.
+
+## 2. Background
+
+A **digital twin** is a digital representation of a real-world object or place. In this project, the "object" is an indoor space. The digital version is built from data collected from the real one and can be viewed and interacted with on a computer.
+
+The project follows this path:
+
+1. Start with a real indoor environment.
+2. Capture visual information about it (video and/or images).
+3. Reconstruct the environment digitally in 3D.
+4. Make the result accessible through a web browser.
+
+The fidelity of the result depends on the captured data, the reconstruction method, and the optimization applied for web delivery. This document makes no claims about reconstruction accuracy or quality. Quality will be assessed on the actual output (see [Success Metrics](#26-success-metrics)).
+
+## 3. Problem Statement
+
+A physical indoor space is difficult to explore remotely when users cannot visit the location.
+
+The project aims to create a digital representation of the space that lets users visually explore the environment through a web browser. The representation should preserve the important spatial and visual characteristics of the captured environment.
+
+## 4. Product Vision
+
+Provide an accessible, browser-based digital twin of an indoor environment that users can explore interactively.
+
+The Round 1 system should be built as a foundation that can later support:
+
+- Points of Interest (POIs)
+- Search
+- Navigation
+- Pathfinding
+- Additional spatial information
+
+> These are **future capabilities**. They are **not** Round 1 functionality.
+
+## 5. Goals and Objectives
+
+**Round 1 goals:**
+
+| ID | Goal |
+|---|---|
+| G-01 | Capture an indoor environment using the provided competition SOP. |
+| G-02 | Process the captured visual data. |
+| G-03 | Generate a usable 3D representation. |
+| G-04 | Optimize the 3D asset for browser delivery. |
+| G-05 | Build a web-based 3D viewer. |
+| G-06 | Allow users to interact with and explore the reconstructed environment. |
+| G-07 | Provide a reliable demonstration suitable for the competition. |
+
+## 6. Target Users
+
+| User | Description |
+|---|---|
+| **Primary** | A visitor or evaluator who wants to explore the reconstructed indoor environment through a website. |
+| **Secondary** | Hackathon/competition judges |
+| **Secondary** | Technical reviewers |
+| **Secondary** | Project team members |
+| **Secondary** | Future users of the digital twin |
+
+## 7. User Needs
+
+The user should be able to:
+
+| ID | Need |
+|---|---|
+| UN-01 | Open the web viewer. |
+| UN-02 | Understand what space is being displayed. |
+| UN-03 | Wait for the 3D environment to load, with feedback. |
+| UN-04 | View the reconstructed indoor environment. |
+| UN-05 | Rotate the camera. |
+| UN-06 | Zoom where supported. |
+| UN-07 | Move/explore the environment where supported. |
+| UN-08 | Understand basic controls. |
+| UN-09 | Return to or reset the viewing experience. |
+
+> The exact interaction model will be finalized during implementation.
+
+## 8. Round 1 Scope
+
+### In Scope
+
+- Indoor environment capture
+- Video/image preprocessing
+- Frame extraction where required
+- 3D reconstruction
+- 3D model processing
+- Web optimization
+- 3D web rendering
+- Interactive camera controls
+- Environment exploration
+- Loading state
+- Basic responsive UI
+- Deployment of the web viewer
+
+### Out of Scope for Round 1
+
+- POI search
+- Room search
+- Navigation
+- Obstacle-aware pathfinding
+- Route generation
+- Real-time navigation
+- Indoor positioning
+- Multi-floor navigation
+- Advanced analytics
+
+These belong to future development, primarily Round 2.
+
+## 9. Functional Requirements
+
+| ID | Requirement | Priority |
+|---|---|---|
+| FR-01 | The system shall load the reconstructed 3D environment. | Must |
+| FR-02 | The system shall render the environment inside a web browser. | Must |
+| FR-03 | The viewer shall provide interactive camera controls. | Must |
+| FR-04 | The user shall be able to explore the reconstructed environment. | Must |
+| FR-05 | The application shall display a loading state while the 3D asset is being loaded. | Must |
+| FR-06 | The application shall provide basic instructions for interacting with the viewer. | Must |
+| FR-07 | The application shall handle model-loading failures gracefully. | Must |
+| FR-08 | The viewer shall provide a reset/recenter option where technically appropriate. | Should |
+| FR-09 | The application shall work on commonly used desktop browsers. | Must |
+
+No functionality beyond this list is part of Round 1 unless it is explicitly approved and added here.
+
+## 10. Non-Functional Requirements
+
+| Category | Requirements |
+|---|---|
+| **Performance** | Reasonable loading time; smooth interaction where hardware permits; optimized 3D assets; efficient memory usage. |
+| **Usability** | Simple controls; clear interface; minimal unnecessary UI; easy-to-understand interaction. |
+| **Compatibility** | Modern desktop browsers; responsive layout where practical. |
+| **Reliability** | Graceful loading failures; no broken viewer when assets fail to load; clear error messages. |
+| **Maintainability** | Modular frontend structure; reconstruction pipeline separated from the web viewer; clear documentation. |
+
+## 11. User Experience Requirements
+
+The website should feel like an **interactive digital twin**, not a static 3D image.
+
+| ID | Requirement |
+|---|---|
+| UX-01 | The initial page shall show the project title. |
+| UX-02 | The initial page shall show a short description. |
+| UX-03 | The initial page shall include an Enter/Explore button if appropriate. |
+| UX-04 | The page shall include the 3D viewer. |
+| UX-05 | Viewer controls shall be minimal and shall not cover excessive portions of the 3D environment. |
+| UX-06 | Unnecessary animations or UI elements that could distract from the reconstruction shall be avoided. |
+
+## 12. 3D Reconstruction Requirements
+
+**Generic pipeline:**
+
+```
+Captured Video / Images
+→ Frame Selection
+→ Image Preprocessing
+→ Feature Matching / Spatial Reconstruction
+→ 3D Reconstruction
+→ Model Processing
+→ Web Optimization
+→ Final 3D Asset
+```
+
+| ID | Requirement |
+|---|---|
+| RR-01 | The pipeline shall accept the captured video/images as input. |
+| RR-02 | The pipeline shall produce a 3D representation of the captured environment. |
+| RR-03 | The final asset shall be suitable for web visualization. |
+| RR-04 | The reconstruction method shall be selected based on the captured data and competition requirements. |
+| RR-05 | Reconstruction output shall be visually inspected before integration into the viewer. |
+
+> **The reconstruction method is intentionally not specified.** Photogrammetry, Gaussian Splatting, NeRF, mesh reconstruction, and SLAM are all possible; none is assumed until the implementation team finalizes the choice. The PRD will be updated at that point.
+
+## 13. Web Viewer Requirements
+
+The viewer shall:
+
+| ID | Requirement |
+|---|---|
+| WV-01 | Load the reconstructed environment. |
+| WV-02 | Render it using browser-based 3D technology. |
+| WV-03 | Support interactive camera movement. |
+| WV-04 | Allow exploration of the space. |
+| WV-05 | Provide understandable controls. |
+| WV-06 | Show loading feedback. |
+| WV-07 | Handle errors (see [Error Handling](#19-error-handling)). |
+| WV-08 | Maintain acceptable performance. |
+
+Potential implementation technologies (Three.js, WebGL, React) remain **implementation decisions** unless finalized. The exact exploration mode (for example orbit-style versus walk-style) is to be decided during implementation and is not committed here.
+
+## 14. System Workflow
+
+```mermaid
+flowchart TD
+    A[Physical Indoor Space] --> B[Capture]
+    B --> C[Captured Video / Images]
+    C --> D[Preprocessing]
+    D --> E[3D Reconstruction]
+    E --> F[3D Asset]
+    F --> G[Web Optimization]
+    G --> H[Web Viewer]
+    H --> I[User Exploration]
+```
+
+## 15. High-Level System Architecture
+
+```mermaid
+flowchart LR
+    subgraph L1[Capture Layer]
+        C1[Indoor Space] --> C2[Video / Images]
+    end
+    subgraph L2[Reconstruction Layer]
+        R1[Preprocessing] --> R2[3D Reconstruction]
+    end
+    subgraph L3[Processing / Optimization Layer]
+        P1[Model Processing] --> P2[Web Optimization]
+    end
+    subgraph L4[Web Application Layer]
+        W1[Model Loader] --> W2[3D Renderer + Camera Controls]
+    end
+    C2 --> R1
+    R2 --> P1
+    P2 --> W1
+    W2 --> U[User]
+```
+
+| Layer | Responsibility |
+|---|---|
+| **Capture Layer** | Record visual data of the physical space following the competition SOP. |
+| **Reconstruction Layer** | Prepare the captured data and generate the 3D representation. |
+| **Processing / Optimization Layer** | Clean and reduce the 3D asset for efficient browser delivery. |
+| **Web Application Layer** | Load, render, and let the user interact with the final asset; show loading and error states. |
+| **User** | Explores the environment in the browser. |
+
+**Extensibility (Round 2 readiness):** The web application layer should keep the model loading, rendering, and camera control concerns separate from the UI, so that a future overlay layer (for example POIs) can be added without rebuilding the viewer. No such overlay is built in Round 1.
+
+## 16. Data Requirements
+
+| Type | Items |
+|---|---|
+| **Input** | Indoor video/images; capture metadata where available |
+| **Intermediate** | Extracted frames; processed images; reconstruction data; intermediate 3D assets |
+| **Output** | Web-compatible 3D asset; web viewer; deployed website |
+
+> Exact file formats are not specified until the implementation is finalized. Large raw and intermediate data should not be committed to the GitHub repository.
+
+## 17. Technical Requirements
+
+> **All technologies below are proposed, not confirmed.**
+
+| Area | Proposed Technologies |
+|---|---|
+| **Frontend** | React, JavaScript, Three.js, WebGL |
+| **Reconstruction** | Python, computer vision tools, photogrammetry/reconstruction tools |
+| **Deployment** | Vercel, Netlify, or GitHub Pages |
+
+| ID | Requirement |
+|---|---|
+| TR-01 | The viewer shall run in the browser without plugins or specialized software. |
+| TR-02 | The reconstruction pipeline shall be kept separate from the web viewer codebase. |
+| TR-03 | The final 3D asset shall be served as a static file with the frontend. |
+| TR-04 | The web viewer shall not depend on special hardware beyond a standard WebGL-capable device. |
+
+## 18. Performance Requirements
+
+No specific FPS or load-time figures are claimed. Targets will be set from measurements after implementation.
+
+The system should:
+
+- Load the 3D environment efficiently.
+- Avoid unnecessarily large assets.
+- Maintain responsive camera interaction.
+- Use optimized textures and geometry where applicable.
+- Provide loading feedback for large assets.
+
+## 19. Error Handling
+
+| Scenario | User-Facing Behavior | Fallback |
+|---|---|---|
+| 3D model fails to load | Message: the environment could not be loaded, with a retry option. | Keep the page functional; show the project description. |
+| Network failure | Message: connection problem, check your network and retry. | Retry button. |
+| Unsupported browser | Message: browser is not supported; suggest a modern browser. | Show project information without the 3D view. |
+| Corrupted asset | Message: the model file could not be read. | Do not render partial/broken geometry; show error state. |
+| Missing model | Message: the model file was not found. | Show error state; log details for developers. |
+| WebGL unavailable | Message: 3D graphics are not available on this device or browser. | Show project information and the demo video link `[DEMO VIDEO URL]`. |
+| Slow loading | Show a progress or loading indicator and a note that loading may take time. | Keep UI responsive; allow the user to wait or retry. |
+
+## 20. Security Considerations
+
+Round 1 is primarily a public visualization application.
+
+- Do not expose API keys.
+- Do not commit secrets to GitHub.
+- Validate external asset paths.
+- Avoid unnecessary collection of user information.
+- Use HTTPS for deployment.
+- Keep dependencies updated where practical.
+
+## 21. Acceptance Criteria
+
+| ID | Criterion | Linked Requirements |
+|---|---|---|
+| AC-01 | The deployed website opens successfully in a supported modern browser. | FR-09 |
+| AC-02 | The reconstructed 3D environment loads successfully. | FR-01, FR-02 |
+| AC-03 | The user can interact with the 3D viewer. | FR-03 |
+| AC-04 | The user can visually explore the reconstructed space. | FR-04 |
+| AC-05 | The viewer provides understandable controls. | FR-06 |
+| AC-06 | A loading indicator appears while the environment is loading. | FR-05 |
+| AC-07 | A meaningful error message appears if the model cannot be loaded. | FR-07 |
+| AC-08 | The final website is suitable for demonstration during the Round 1 evaluation. | G-07 |
+
+No claim of perfect reconstruction accuracy is made or required.
+
+## 22. Round 1 Deliverables
+
+| # | Deliverable | Should Demonstrate |
+|---|---|---|
+| 1 | **Technical Abstract** | The problem, the approach, the pipeline from capture to web viewer, the tools actually used, and honest limitations. |
+| 2 | **Web Viewer Link** | A working deployed site where evaluators can load and explore the reconstructed space. `[WEB VIEWER URL]` |
+| 3 | **GitHub / Code Repository** | Organized code for the viewer and reconstruction workflow, with documentation so the work can be understood and reproduced. `[GITHUB URL]` |
+| 4 | **3–5 minute Demo Video** | The capture process, the reconstruction result, and live exploration of the web viewer. `[DEMO VIDEO URL]` |
+
+## 23. Future Scope
+
+> **These are future features and are not Round 1 requirements.**
+
+### Round 2 (potential additions)
+
+- Points of Interest
+- Rooms
+- Labs
+- Entrances
+- POI search
+- Obstacle-aware navigation
+- Pathfinding
+
+### Round 3 (potential additions)
+
+- Capture a new IIT Bombay venue
+- Generate a new digital twin
+- Add POIs
+- Add navigation
+- Live demonstration
+
+## 24. Constraints
+
+- The project must follow the competition's capture SOP.
+- The solution should be practical within the available development time.
+- The final 3D environment must be usable in a browser.
+- Large assets should be optimized.
+- The project should remain maintainable for future rounds.
+- The implementation should avoid unnecessary hardware dependency for the web viewer.
+
+## 25. Assumptions
+
+- The team has access to an indoor space for capture.
+- The competition provides a capture SOP.
+- The team has access to a computer capable of processing the reconstruction.
+- Users will access the viewer through a modern web browser.
+- The exact reconstruction technology will be finalized after evaluating the captured data.
+
+## 26. Success Metrics
+
+Metrics are qualitative or pass/fail unless measured later. No results are stated here.
+
+| Metric | How It Will Be Assessed |
+|---|---|
+| Successful 3D reconstruction | A usable 3D representation of the space is produced. |
+| Successful browser rendering | The asset renders in supported browsers. |
+| Viewer usability | A first-time user can find and use the controls without help. |
+| Loading reliability | The asset loads consistently across repeated tests. |
+| Interactive exploration | The user can move through and inspect the space. |
+| Model visual quality | Team review of the result against the captured space. |
+| Web performance | Load time and interaction smoothness are measured on test devices and recorded. |
+| Round 1 submission | All four deliverables are completed. |
+
+## 27. Development Milestones
+
+| # | Milestone | Outcome |
+|---|---|---|
+| 1 | Understand competition SOP and finalize capture method | Capture plan agreed |
+| 2 | Capture the indoor environment | Raw visual data collected |
+| 3 | Process captured data | Frames/images prepared |
+| 4 | Generate and inspect the 3D reconstruction | Reconstruction method confirmed; result reviewed |
+| 5 | Optimize the 3D asset for web | Web-ready asset |
+| 6 | Build the interactive web viewer | Working viewer with controls, loading, and error states |
+| 7 | Integrate the final model | Model displayed in the viewer |
+| 8 | Test performance and usability | Issues identified and fixed |
+| 9 | Deploy the website | Public viewer link |
+| 10 | Prepare the technical abstract and 3–5 minute demo video | Submission ready |
+
+---
+
+## Current Implementation Status
+
+- [ ] Capture completed
+- [ ] Reconstruction completed
+- [ ] 3D asset optimized
+- [ ] Web viewer implemented
+- [ ] Model integrated
+- [ ] Website deployed
+- [ ] Demo video recorded
+- [ ] Technical abstract completed
+- [ ] GitHub repository finalized
