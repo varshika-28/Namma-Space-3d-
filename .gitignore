@@ -1,0 +1,12 @@
+node_modules/
+dist/
+.env
+.DS_Store
+
+# Do not commit raw captures or extracted intermediate frames
+Reconstruction/input/*.mp4
+Reconstruction/frames/*.jpg
+Reconstruction/frames/*.png
+Reconstruction/processed/
+Reconstruction/output/*.ply
+Reconstruction/output/*.txt
